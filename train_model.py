@@ -1,114 +1,60 @@
 import os
-import random
 import cv2
 import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.utils import to_categorical
 
 DATASET_DIR = "dataset"
+TRAIN_DIR = os.path.join(DATASET_DIR, "train")
+TEST_DIR = os.path.join(DATASET_DIR, "test")
 IMAGE_SIZE = (64, 64)
-TARGET_IMAGES_PER_CLASS = 50
-SEED = 42
-
-random.seed(SEED)
-np.random.seed(SEED)
 
 
-def load_dataset(dataset_dir):
-    class_images = {}
+def load_split(split_dir):
+    images = []
+    labels = []
+    counts = {}
 
-    for folder in sorted(os.listdir(dataset_dir)):
-        folder_path = os.path.join(dataset_dir, folder)
-        if not os.path.isdir(folder_path):
+    if not os.path.isdir(split_dir):
+        raise ValueError(f"Missing dataset split directory: {split_dir}")
+
+    for disease in sorted(os.listdir(split_dir)):
+        disease_dir = os.path.join(split_dir, disease)
+        if not os.path.isdir(disease_dir):
             continue
 
-        images = []
-        for img_name in sorted(os.listdir(folder_path)):
-            img_path = os.path.join(folder_path, img_name)
-            img = cv2.imread(img_path)
+        counts[disease] = 0
+        for image_name in sorted(os.listdir(disease_dir)):
+            image_path = os.path.join(disease_dir, image_name)
+            img = cv2.imread(image_path)
             if img is None:
                 continue
 
             img = cv2.resize(img, IMAGE_SIZE)
             images.append(img)
+            labels.append(disease)
+            counts[disease] += 1
 
-        if images:
-            class_images[folder] = images
+    if not images:
+        raise ValueError(f"No valid images found in {split_dir}")
 
-    return class_images
-
-
-def augment_image(image):
-    augmented = image.copy()
-
-    if random.random() < 0.5:
-        augmented = cv2.flip(augmented, 1)
-
-    angle = random.uniform(-18, 18)
-    scale = random.uniform(0.92, 1.08)
-    center = (IMAGE_SIZE[0] // 2, IMAGE_SIZE[1] // 2)
-    matrix = cv2.getRotationMatrix2D(center, angle, scale)
-    matrix[0, 2] += random.uniform(-4, 4)
-    matrix[1, 2] += random.uniform(-4, 4)
-    augmented = cv2.warpAffine(
-        augmented,
-        matrix,
-        IMAGE_SIZE,
-        borderMode=cv2.BORDER_REFLECT_101,
-    )
-
-    brightness = random.uniform(0.85, 1.15)
-    contrast = random.uniform(0.9, 1.1)
-    augmented = cv2.convertScaleAbs(augmented, alpha=contrast, beta=(brightness - 1.0) * 30)
-
-    if random.random() < 0.35:
-        noise = np.random.normal(0, 6, augmented.shape).astype(np.int16)
-        augmented = np.clip(augmented.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-    return augmented
+    return np.array(images, dtype=np.float32) / 255.0, np.array(labels), counts
 
 
-def build_balanced_dataset(class_images, target_per_class):
-    images = []
-    labels = []
+X_train, y_train_labels, train_counts = load_split(TRAIN_DIR)
+X_test, y_test_labels, test_counts = load_split(TEST_DIR)
 
-    for label, base_images in class_images.items():
-        expanded_images = list(base_images)
-
-        while len(expanded_images) < target_per_class:
-            source_img = random.choice(base_images)
-            expanded_images.append(augment_image(source_img))
-
-        expanded_images = expanded_images[:target_per_class]
-
-        for img in expanded_images:
-            images.append(img)
-            labels.append(label)
-
-    return np.array(images, dtype=np.float32) / 255.0, np.array(labels)
-
-
-class_images = load_dataset(DATASET_DIR)
-
-if not class_images:
-    raise ValueError("No valid dataset images found.")
-
-images, labels = build_balanced_dataset(class_images, TARGET_IMAGES_PER_CLASS)
+all_classes = sorted(set(y_train_labels) | set(y_test_labels))
+if not all_classes:
+    raise ValueError("No disease classes found in dataset.")
 
 le = LabelEncoder()
-labels_encoded = le.fit_transform(labels)
-labels_cat = to_categorical(labels_encoded)
+le.fit(all_classes)
 
-X_train, X_test, y_train, y_test = train_test_split(
-    images,
-    labels_cat,
-    test_size=0.2,
-    random_state=SEED,
-    stratify=labels_encoded,
-)
+y_train = to_categorical(le.transform(y_train_labels), num_classes=len(le.classes_))
+y_test = to_categorical(le.transform(y_test_labels), num_classes=len(le.classes_))
 
 model = Sequential([
     Conv2D(32, (3, 3), activation="relu", input_shape=(64, 64, 3)),
@@ -122,12 +68,18 @@ model = Sequential([
 
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
+model.fit(
+    X_train,
+    y_train,
+    epochs=10,
+    validation_data=(X_test, y_test),
+)
 
 model.save("skin_disease_model.h5")
 np.save("labels.npy", le.classes_)
 
-for label in sorted(class_images):
-    print(f"{label}: {len(class_images[label])} original images -> {TARGET_IMAGES_PER_CLASS} training images with augmentation")
+print("Training split counts:")
+for disease in le.classes_:
+    print(f"  {disease}: {train_counts.get(disease, 0)} train / {test_counts.get(disease, 0)} test")
 
 print("Model training complete and saved.")
