@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DermaCare AI | Premium Skin Detection Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="site-shell">
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="ambient ambient-c"></div>
+
+  <header class="topbar glass-panel">
+    <a class="brand" href="/">
+      <span class="brand-mark">DS</span>
+      <div>
+        <strong>DermaCare AI</strong>
+        <span>AI-powered dermatology screening platform</span>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a class="active" href="/">Home</a>
+      <a href="/diseases">Diseases</a>
+      <a href="/faq">FAQ</a>
+    </nav>
+
+    <a class="btn btn-secondary nav-cta" href="#consultation">Consultation Guidance</a>
+  </header>
+
+  <main class="page-home">
+    <section class="hero-section">
+      <div class="hero-copy glass-panel gradient-panel">
+        <span class="eyebrow">Advanced Dermatology AI</span>
+        <h1>AI-Powered Skin Disease Detection System</h1>
+        <p>
+          A premium healthcare interface designed for hospitals, dermatology clinics, and patient-facing demos.
+          Upload a skin image, run AI analysis, and review a structured medical prediction dashboard with clear guidance.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#scanner">Start Skin Scan</a>
+          <a class="btn btn-secondary" href="#resultDashboard">View Prediction Dashboard</a>
+        </div>
+
+        <div class="hero-stats">
+          <article class="stat-card soft-card">
+            <span>Platform Focus</span>
+            <strong>Preliminary skin screening</strong>
+          </article>
+          <article class="stat-card soft-card">
+            <span>Product Style</span>
+            <strong>Medical startup dashboard</strong>
+          </article>
+          <article class="stat-card soft-card">
+            <span>Clinical Output</span>
+            <strong>Structured AI report</strong>
+          </article>
+        </div>
+      </div>
+
+      <aside class="hero-visual glass-panel">
+        <div class="hero-dashboard">
+          <div class="dashboard-window">
+            <div class="dashboard-topbar">
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+            </div>
+            <div class="dashboard-grid">
+              <div class="dashboard-panel dashboard-panel-primary">
+                <span>Live Scan Monitor</span>
+                <strong>Skin analysis session active</strong>
+                <div class="scan-surface">
+                  <div class="scan-surface-glow"></div>
+                  <div class="scan-crosshair"></div>
+                </div>
+              </div>
+              <div class="dashboard-side">
+                <div class="mini-panel">
+                  <span>Signal Quality</span>
+                  <strong>High clarity image</strong>
+                </div>
+                <div class="mini-panel">
+                  <span>Prediction Engine</span>
+                  <strong>Ready for analysis</strong>
+                </div>
+              </div>
+              <div class="dashboard-metrics">
+                <div class="metric-panel">
+                  <span>Confidence Layer</span>
+                  <strong>Structured output</strong>
+                </div>
+                <div class="metric-panel">
+                  <span>Clinical Reminder</span>
+                  <strong>AI-assisted only</strong>
+                </div>
+                <div class="metric-panel full">
+                  <span>Dashboard Summary</span>
+                  <strong>Symptoms, precautions, treatment guidance</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="floating-card floating-card-top soft-card">
+          <span>AI Skin Mapping</span>
+          <strong>Real-time lesion pattern review</strong>
+        </div>
+        <div class="floating-card floating-card-bottom soft-card">
+          <span>Prediction Summary</span>
+          <strong>Confidence, severity, precautions</strong>
+        </div>
+      </aside>
+    </section>
+
+    <section class="steps-section">
+      <div class="section-heading">
+        <span class="eyebrow">Scan In 3 Steps</span>
+        <h2>Built like a modern healthcare workflow</h2>
+      </div>
+
+      <div class="steps-grid">
+        <article class="step-card glass-panel">
+          <div class="step-icon">
+            <span>01</span>
+            <small>Upload</small>
+          </div>
+          <h3>Upload Skin Image</h3>
+          <p>Provide a clear, close, well-lit image of the affected skin region.</p>
+        </article>
+        <article class="step-card glass-panel">
+          <div class="step-icon">
+            <span>02</span>
+            <small>Analyze</small>
+          </div>
+          <h3>AI Analysis</h3>
+          <p>The system extracts visual features and evaluates the most likely condition class.</p>
+        </article>
+        <article class="step-card glass-panel">
+          <div class="step-icon">
+            <span>03</span>
+            <small>Report</small>
+          </div>
+          <h3>Get Medical Prediction Report</h3>
+          <p>Review confidence, severity, symptoms, precautions, and the final disclaimer.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="scanner" class="scanner-section">
+      <div class="scanner-panel glass-panel gradient-panel">
+        <div class="section-heading left">
+          <span class="eyebrow">Upload Scanner</span>
+          <h2>Drag and drop a skin image</h2>
+          <p>Use a sharp, well-lit image with the affected area clearly visible for a more useful preliminary prediction.</p>
+        </div>
+
+        <label class="upload-zone" id="uploadZone" for="imageInput">
+          <input type="file" id="imageInput" accept="image/*">
+          <div class="upload-content">
+            <div class="upload-graphic">
+              <div class="upload-graphic-inner"></div>
+            </div>
+            <strong>Drag and drop your image here</strong>
+            <p>or click to browse image files</p>
+          </div>
+        </label>
+
+        <div class="preview-card glass-subcard">
+          <img id="preview" alt="Skin image preview">
+          <div class="preview-placeholder" id="previewPlaceholder">
+            <div class="preview-visual">
+              <div class="preview-grid-line"></div>
+              <div class="preview-grid-line second"></div>
+              <div class="preview-ring"></div>
+            </div>
+            <strong>Medical scan preview</strong>
+            <p>Your uploaded image will appear here before analysis begins.</p>
+          </div>
+        </div>
+
+        <div class="scanner-actions">
+          <button class="btn btn-primary" type="button" onclick="analyze()">Analyze Skin Image</button>
+          <p class="micro-copy">AI output should be interpreted as screening support only.</p>
+        </div>
+      </div>
+
+      <div class="analysis-column">
+        <section class="progress-panel glass-panel">
+          <div class="panel-header">
+            <div>
+          <span class="eyebrow">AI Analysis</span>
+          <h2>Professional processing workflow</h2>
+        </div>
+            <div id="loader" class="loader-ring" aria-hidden="true"></div>
+          </div>
+
+          <div class="progress-list" id="progressList">
+            <article class="progress-item active">
+              <span class="progress-dot"></span>
+              <div>
+                <strong>Image preprocessing</strong>
+                <p>Preparing image data for standardized skin-pattern evaluation.</p>
+              </div>
+            </article>
+            <article class="progress-item">
+              <span class="progress-dot"></span>
+              <div>
+                <strong>AI pattern analysis</strong>
+                <p>Running feature extraction and disease-class comparison.</p>
+              </div>
+            </article>
+            <article class="progress-item">
+              <span class="progress-dot"></span>
+              <div>
+                <strong>Prediction report</strong>
+                <p>Compiling severity, symptoms, precautions, and final medical disclaimer.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="resultDashboard" class="results-panel glass-panel">
+          <div class="section-heading left">
+            <span class="eyebrow">Result Dashboard</span>
+            <h2>AI prediction results</h2>
+          </div>
+
+          <div id="result" class="result-grid">
+            <article class="result-card glass-subcard">
+              <span>Disease prediction</span>
+              <strong>Awaiting analysis</strong>
+              <p>Upload an image to generate the disease prediction output.</p>
+            </article>
+            <article class="result-card glass-subcard">
+              <span>Confidence score</span>
+              <strong>0%</strong>
+              <p>The model confidence percentage will appear after analysis.</p>
+            </article>
+            <article class="result-card glass-subcard">
+              <span>Severity meter</span>
+              <strong>Pending</strong>
+              <div class="severity-meter">
+                <div class="severity-fill" style="width: 0%"></div>
+              </div>
+              <p>Severity guidance is shown as a screening support indicator only.</p>
+            </article>
+            <article class="result-card glass-subcard">
+              <span>Dermatologist consultation notice</span>
+              <strong>Professional review advised</strong>
+              <p>Please consult a certified dermatologist for proper diagnosis and treatment.</p>
+            </article>
+            <article class="result-card glass-subcard full">
+              <span>Symptoms</span>
+              <p>Symptoms will appear here after AI analysis is completed.</p>
+            </article>
+            <article class="result-card glass-subcard full">
+              <span>Precautions</span>
+              <p>Precaution guidance will appear here to support safe follow-up.</p>
+            </article>
+            <article class="result-card glass-subcard full">
+              <span>Treatment suggestions</span>
+              <p>Treatment suggestions will appear here as general educational guidance.</p>
+            </article>
+            <article class="result-card glass-subcard full disclaimer-card">
+              <span>Medical disclaimer</span>
+              <p>This AI system provides preliminary skin disease prediction based on image analysis. It is not a medical diagnosis and should not replace professional clinical evaluation. Please consult a certified dermatologist for proper diagnosis and treatment.</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="disease-section">
+      <div class="section-heading">
+        <span class="eyebrow">Disease Information</span>
+        <h2>Common conditions in the current model classes</h2>
+      </div>
+
+      <div class="disease-grid">
+        <article class="disease-card glass-panel">
+          <div class="disease-visual disease-acne"></div>
+          <h3>Acne</h3>
+          <p>Usually includes clogged pores, inflammatory lesions, and localized breakouts on oily skin.</p>
+        </article>
+        <article class="disease-card glass-panel">
+          <div class="disease-visual disease-eczema"></div>
+          <h3>Eczema</h3>
+          <p>Often appears as dry, itchy, irritated, or inflamed skin with barrier-related discomfort.</p>
+        </article>
+        <article class="disease-card glass-panel">
+          <div class="disease-visual disease-psoriasis"></div>
+          <h3>Psoriasis</h3>
+          <p>Can present with thicker scaly plaques, redness, and persistent inflammatory flare patterns.</p>
+        </article>
+        <article class="disease-card glass-panel">
+          <div class="disease-visual disease-ringworm"></div>
+          <h3>Ringworm</h3>
+          <p>Frequently appears as ring-like lesions with a clearer center and more visible outer edge.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="report-section glass-panel gradient-panel">
+      <div class="section-heading left">
+        <span class="eyebrow">Download Medical Report</span>
+        <h2>Generate a structured prediction summary</h2>
+        <p>Download the latest AI screening result as a simple report for presentation or dermatologist review.</p>
+      </div>
+
+      <div class="report-layout">
+        <div class="report-summary glass-subcard">
+          <span>Current report status</span>
+          <strong id="reportDisease">No analysis completed</strong>
+          <p id="reportMeta">Run an image analysis to enable report download.</p>
+        </div>
+        <button class="btn btn-primary" type="button" id="downloadReportBtn">Download Medical Report</button>
+      </div>
+    </section>
+
+    <section class="two-column-section">
+      <section class="faq-section glass-panel">
+        <div class="section-heading left">
+          <span class="eyebrow">FAQ</span>
+          <h2>Common questions</h2>
+        </div>
+        <div class="faq-list">
+          <article class="faq-item glass-subcard">
+            <h3>Is this a medical diagnosis?</h3>
+            <p>No. This system provides preliminary AI prediction and should not replace professional clinical evaluation.</p>
+          </article>
+          <article class="faq-item glass-subcard">
+            <h3>What image should I upload?</h3>
+            <p>Use a clear, close, well-lit image focused on the affected skin region.</p>
+          </article>
+          <article class="faq-item glass-subcard">
+            <h3>Can I rely on the confidence score alone?</h3>
+            <p>No. Confidence is only one AI output and should be reviewed alongside professional evaluation.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="testimonial-section glass-panel">
+        <div class="section-heading left">
+          <span class="eyebrow">Testimonials</span>
+          <h2>Professional demo feedback</h2>
+        </div>
+        <div class="testimonial-list">
+          <article class="testimonial-item glass-subcard">
+            <p>"The interface feels much closer to a healthcare startup product than a classroom demo. The prediction dashboard is strong."</p>
+            <strong>Clinical Design Reviewer</strong>
+          </article>
+          <article class="testimonial-item glass-subcard">
+            <p>"The gradients, floating cards, and visual balance make the experience feel polished and presentation-ready."</p>
+            <strong>HealthTech UX Reviewer</strong>
+          </article>
+          <article class="testimonial-item glass-subcard">
+            <p>"The structured disclaimer and AI report flow make the platform feel more realistic and trustworthy."</p>
+            <strong>Medical Demo Panel</strong>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section id="consultation" class="consultation-section glass-panel gradient-panel">
+      <div class="consultation-copy">
+        <span class="eyebrow">Consultation & Help</span>
+        <h2>Clinical follow-up guidance</h2>
+        <p>If the result seems uncertain or symptoms are severe, use the AI output as a support layer and consult a certified dermatologist for diagnosis and treatment.</p>
+      </div>
+
+      <div class="consultation-grid">
+        <article class="consultation-card glass-subcard">
+          <strong>Image Guidance</strong>
+          <p>Use proper lighting, avoid blur, and focus clearly on the affected area for better analysis quality.</p>
+        </article>
+        <article class="consultation-card glass-subcard">
+          <strong>Medical Guidance</strong>
+          <p>Persistent, painful, infected, or rapidly spreading symptoms should be reviewed by a dermatologist promptly.</p>
+        </article>
+        <article class="consultation-card glass-subcard">
+          <strong>Result Guidance</strong>
+          <p>This system provides only preliminary AI prediction and should not be treated as a final medical diagnosis.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
