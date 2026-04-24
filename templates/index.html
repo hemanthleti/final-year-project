@@ -45,7 +45,8 @@
 
         <div class="hero-actions">
           <a class="btn btn-primary" href="#scanner">Start Skin Scan</a>
-          <a class="btn btn-secondary" href="#resultDashboard">View Prediction Dashboard</a>
+          <a class="btn btn-secondary" href="/diseases">Disease Info</a>
+          <a class="btn btn-secondary" href="/faq">FAQ</a>
         </div>
 
         <div class="hero-stats">
@@ -171,25 +172,58 @@
             <strong>Drag and drop your image here</strong>
             <p>or click to browse image files</p>
           </div>
+          <img id="uploadPreview" class="upload-preview hidden" alt="Uploaded image preview">
         </label>
 
-        <div class="preview-card glass-subcard">
-          <img id="preview" alt="Skin image preview">
-          <div class="preview-placeholder" id="previewPlaceholder">
-            <div class="preview-visual">
-              <div class="preview-grid-line"></div>
-              <div class="preview-grid-line second"></div>
-              <div class="preview-ring"></div>
+        <div class="scan-workspace glass-subcard">
+          <div class="scan-stage" id="scanStage">
+            <div class="scan-image-wrap" id="scanImageWrap">
+              <img id="preview" alt="Skin image scan view">
             </div>
-            <strong>Medical scan preview</strong>
-            <p>Your uploaded image will appear here before analysis begins.</p>
+            <div class="scan-overlay hidden" id="scanOverlay">
+              <div class="scan-frame">
+                <div class="scan-line"></div>
+              </div>
+            </div>
+            <div class="preview-placeholder" id="previewPlaceholder">
+              <div class="preview-visual">
+                <div class="preview-grid-line"></div>
+                <div class="preview-grid-line second"></div>
+                <div class="preview-ring"></div>
+              </div>
+              <strong>Medical scan workspace</strong>
+              <p>Upload an image and adjust zoom to preview the scan frame. Click Analyze when the scan preview is ready.</p>
+            </div>
+          </div>
+
+          <div class="zoom-controls">
+            <span>Scan Zoom</span>
+            <input type="range" id="zoomSlider" min="100" max="220" value="100">
+            <strong id="zoomValue">100%</strong>
           </div>
         </div>
 
         <div class="scanner-actions">
           <button class="btn btn-primary" type="button" onclick="analyze()">Analyze Skin Image</button>
-          <p class="micro-copy">AI output should be interpreted as screening support only.</p>
+          <p class="micro-copy">Preview updates as you upload and zoom; Analyze runs the AI prediction and report generation.</p>
         </div>
+
+        <section class="report-section glass-panel gradient-panel">
+          <div class="section-heading left">
+            <span class="eyebrow">Download Medical Report</span>
+            <h2>Generate a structured prediction summary</h2>
+            <p>Run the scan and then download the latest AI screening report from here.</p>
+          </div>
+
+          <div class="report-layout">
+            <div class="report-summary glass-subcard">
+              <span>Current report status</span>
+              <strong id="reportDisease">No analysis completed</strong>
+              <p id="reportMeta">Run an image analysis to enable report download.</p>
+            </div>
+            <button class="btn btn-primary" type="button" id="downloadReportBtn">Download Medical Report</button>
+          </div>
+        </section>
       </div>
 
       <div class="analysis-column">
@@ -300,6 +334,19 @@
         </article>
         <article class="disease-card glass-panel">
           <div class="disease-visual-card">
+            <span class="disease-label">Fungal Condition</span>
+            <strong>Candidiasis Profile</strong>
+            <div class="disease-points">
+              <span>Redness</span>
+              <span>Moisture</span>
+              <span>Irritation</span>
+            </div>
+          </div>
+          <h3>Candidiasis</h3>
+          <p>Commonly appears in warm or moist areas with redness, irritation, and fungal overgrowth.</p>
+        </article>
+        <article class="disease-card glass-panel">
+          <div class="disease-visual-card">
             <span class="disease-label">Barrier Disorder</span>
             <strong>Eczema Profile</strong>
             <div class="disease-points">
@@ -326,38 +373,59 @@
         </article>
         <article class="disease-card glass-panel">
           <div class="disease-visual-card">
+            <span class="disease-label">Vascular Inflammatory</span>
+            <strong>Rosacea Profile</strong>
+            <div class="disease-points">
+              <span>Flushing</span>
+              <span>Redness</span>
+              <span>Sensitivity</span>
+            </div>
+          </div>
+          <h3>Rosacea</h3>
+          <p>Often affects the face with persistent redness, visible sensitivity, and flushing-like symptoms.</p>
+        </article>
+        <article class="disease-card glass-panel">
+          <div class="disease-visual-card">
             <span class="disease-label">Fungal Infection</span>
-            <strong>Ringworm Profile</strong>
+            <strong>Tinea Profile</strong>
             <div class="disease-points">
               <span>Rings</span>
               <span>Edges</span>
               <span>Spread</span>
             </div>
           </div>
-          <h3>Ringworm</h3>
-          <p>Frequently appears as ring-like lesions with a clearer center and more visible outer edge.</p>
+          <h3>Tinea</h3>
+          <p>Frequently appears as ring-like fungal lesions with scaling borders and clearer central areas.</p>
+        </article>
+        <article class="disease-card glass-panel">
+          <div class="disease-visual-card">
+            <span class="disease-label">Pigment Disorder</span>
+            <strong>Vitiligo Profile</strong>
+            <div class="disease-points">
+              <span>Depigmentation</span>
+              <span>Patches</span>
+              <span>Contrast</span>
+            </div>
+          </div>
+          <h3>Vitiligo</h3>
+          <p>Usually presents as clearly demarcated lighter skin patches due to loss of pigmentation.</p>
+        </article>
+        <article class="disease-card glass-panel">
+          <div class="disease-visual-card">
+            <span class="disease-label">Viral Lesion</span>
+            <strong>Warts Profile</strong>
+            <div class="disease-points">
+              <span>Raised</span>
+              <span>Rough</span>
+              <span>Localized</span>
+            </div>
+          </div>
+          <h3>Warts</h3>
+          <p>Usually appear as rough, raised, localized growths caused by viral skin infection.</p>
         </article>
       </div>
     </section>
 
-    <section class="report-section glass-panel gradient-panel">
-      <div class="section-heading left">
-        <span class="eyebrow">Download Medical Report</span>
-        <h2>Generate a structured prediction summary</h2>
-        <p>Download the latest AI screening result as a simple report for presentation or dermatologist review.</p>
-      </div>
-
-      <div class="report-layout">
-        <div class="report-summary glass-subcard">
-          <span>Current report status</span>
-          <strong id="reportDisease">No analysis completed</strong>
-          <p id="reportMeta">Run an image analysis to enable report download.</p>
-        </div>
-        <button class="btn btn-primary" type="button" id="downloadReportBtn">Download Medical Report</button>
-      </div>
-    </section>
-
-    <section class="two-column-section">
       <section class="faq-section glass-panel">
         <div class="section-heading left">
           <span class="eyebrow">FAQ</span>

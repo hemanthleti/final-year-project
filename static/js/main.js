@@ -8,8 +8,13 @@ const progressList = document.getElementById("progressList");
 const reportDisease = document.getElementById("reportDisease");
 const reportMeta = document.getElementById("reportMeta");
 const downloadReportBtn = document.getElementById("downloadReportBtn");
+const zoomSlider = document.getElementById("zoomSlider");
+const zoomValue = document.getElementById("zoomValue");
+const uploadPreview = document.getElementById("uploadPreview");
+const scanOverlay = document.getElementById("scanOverlay");
 
 let latestReport = null;
+let currentZoom = 1;
 
 const medicalDisclaimer = "This AI system provides preliminary skin disease prediction based on image analysis. It is not a medical diagnosis and should not replace professional clinical evaluation. Please consult a certified dermatologist for proper diagnosis and treatment.";
 
@@ -21,6 +26,14 @@ const diseaseLibrary = {
     precautions: "Avoid aggressive scrubbing, reduce pore-clogging products, keep the affected area clean, and avoid squeezing lesions.",
     treatment: "General care may include gentle cleansing, non-comedogenic products, and dermatologist review for persistent or scarring acne.",
     notice: "Consult a certified dermatologist if lesions are painful, cystic, recurrent, or leaving scars."
+  },
+  Candidiasis: {
+    severity: "Moderate",
+    severityPercent: 52,
+    symptoms: "Redness, irritation, itching, moist skin folds, and fungal overgrowth in warm areas.",
+    precautions: "Keep the area dry, reduce friction, maintain hygiene, and avoid prolonged moisture exposure.",
+    treatment: "General treatment may include antifungal care and professional review if symptoms persist or worsen.",
+    notice: "Consult a certified dermatologist if the rash spreads, becomes painful, or keeps recurring."
   },
   Eczema: {
     severity: "Moderate",
@@ -38,13 +51,37 @@ const diseaseLibrary = {
     treatment: "Clinical management may involve topical medication, phototherapy, or dermatologist-guided therapy depending on severity.",
     notice: "Consult a certified dermatologist for confirmation and long-term management of psoriasis symptoms."
   },
-  Ringworm: {
+  Rosacea: {
+    severity: "Moderate",
+    severityPercent: 48,
+    symptoms: "Facial redness, flushing, sensitivity, visible irritation, and inflammation in central facial areas.",
+    precautions: "Avoid heat triggers, harsh skincare products, excessive sun exposure, and monitor worsening redness.",
+    treatment: "Supportive care may include trigger reduction and dermatologist-guided topical or oral treatment when needed.",
+    notice: "Consult a certified dermatologist if facial redness becomes persistent, painful, or progressively worse."
+  },
+  Tinea: {
     severity: "Mild to Moderate",
     severityPercent: 44,
     symptoms: "Ring-shaped rash, itching, scaling edges, redness, and outward lesion spread.",
     precautions: "Keep the area dry, avoid sharing towels or clothing, and maintain good hygiene to reduce spread.",
     treatment: "General treatment may include topical antifungal care and professional review if lesions spread or persist.",
     notice: "Consult a certified dermatologist if the infection is widespread, persistent, or affecting sensitive areas."
+  },
+  Vitiligo: {
+    severity: "Variable",
+    severityPercent: 34,
+    symptoms: "Clearly defined lighter skin patches, pigment loss, and contrast changes in affected regions.",
+    precautions: "Protect depigmented skin from sun exposure and monitor the spread or change in affected areas.",
+    treatment: "Management may include dermatologist-guided therapies focused on pigmentation support and skin protection.",
+    notice: "Consult a certified dermatologist for confirmation and discussion of long-term treatment options."
+  },
+  Warts: {
+    severity: "Mild to Moderate",
+    severityPercent: 42,
+    symptoms: "Rough, raised, localized skin growths that may vary in size, texture, and sensitivity.",
+    precautions: "Avoid picking lesions, maintain hygiene, and reduce direct spread through skin contact.",
+    treatment: "Treatment may include topical care or dermatologist-guided removal methods depending on location and severity.",
+    notice: "Consult a certified dermatologist if lesions are painful, spreading, or occurring in sensitive areas."
   }
 };
 
@@ -89,6 +126,16 @@ if (downloadReportBtn) {
   downloadReportBtn.addEventListener("click", downloadReport);
 }
 
+if (zoomSlider && preview) {
+  zoomSlider.addEventListener("input", () => {
+    currentZoom = Number(zoomSlider.value) / 100;
+    preview.style.transform = `scale(${currentZoom})`;
+    if (zoomValue) {
+      zoomValue.textContent = `${zoomSlider.value}%`;
+    }
+  });
+}
+
 function updatePreview(file) {
   if (!preview) {
     return;
@@ -97,16 +144,33 @@ function updatePreview(file) {
   if (!file) {
     preview.src = "";
     preview.style.display = "none";
+    if (uploadPreview) {
+      uploadPreview.src = "";
+      uploadPreview.classList.add("hidden");
+    }
     if (previewPlaceholder) {
       previewPlaceholder.classList.remove("hidden");
+    }
+    if (scanOverlay) {
+      scanOverlay.classList.add("hidden");
+      scanOverlay.classList.remove("scanning");
     }
     return;
   }
 
-  preview.src = URL.createObjectURL(file);
+  const imageUrl = URL.createObjectURL(file);
+  preview.src = imageUrl;
   preview.style.display = "block";
+  preview.style.transform = `scale(${currentZoom})`;
+  if (uploadPreview) {
+    uploadPreview.src = imageUrl;
+    uploadPreview.classList.remove("hidden");
+  }
   if (previewPlaceholder) {
     previewPlaceholder.classList.add("hidden");
+  }
+  if (scanOverlay) {
+    scanOverlay.classList.remove("hidden");
   }
 }
 
@@ -116,8 +180,10 @@ async function analyze() {
     return;
   }
 
+  startScanAnimation();
   const formData = new FormData();
-  formData.append("skin_image", imageInput.files[0]);
+  const uploadFile = await buildZoomedImageFile(imageInput.files[0]);
+  formData.append("skin_image", uploadFile);
 
   toggleLoading(true);
   markProgress("analyzing");
@@ -141,6 +207,7 @@ async function analyze() {
     markProgress("error");
   } finally {
     toggleLoading(false);
+    stopScanAnimation();
   }
 }
 
@@ -245,6 +312,8 @@ function renderError(message) {
   if (reportMeta) {
     reportMeta.textContent = message;
   }
+
+  stopScanAnimation();
 }
 
 function toggleLoading(isLoading) {
@@ -253,6 +322,19 @@ function toggleLoading(isLoading) {
   }
 
   loader.style.display = isLoading ? "block" : "none";
+}
+
+function startScanAnimation() {
+  if (scanOverlay) {
+    scanOverlay.classList.add("scanning");
+    scanOverlay.classList.remove("hidden");
+  }
+}
+
+function stopScanAnimation() {
+  if (scanOverlay) {
+    scanOverlay.classList.remove("scanning");
+  }
 }
 
 function markProgress(stage) {
@@ -488,4 +570,38 @@ function downloadReport() {
   reportWindow.document.open();
   reportWindow.document.write(reportHtml);
   reportWindow.document.close();
+}
+
+function buildZoomedImageFile(file) {
+  return new Promise((resolve) => {
+    if (!file || currentZoom <= 1) {
+      resolve(file);
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext("2d");
+
+      const scale = 1 / currentZoom;
+      const sw = img.width * scale;
+      const sh = img.height * scale;
+      const sx = (img.width - sw) / 2;
+      const sy = (img.height - sh) / 2;
+
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          resolve(file);
+          return;
+        }
+        const processedFile = new File([blob], file.name, { type: "image/jpeg" });
+        resolve(processedFile);
+      }, "image/jpeg", 0.95);
+    };
+    img.src = URL.createObjectURL(file);
+  });
 }
