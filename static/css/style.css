@@ -808,39 +808,48 @@ svg{
   padding:20px;
 }
 
-.disease-visual{
-  height:160px;
+.disease-visual-card{
   border-radius:20px;
   margin-bottom:16px;
+  padding:20px;
+  min-height:150px;
   border:1px solid var(--border);
-  background-size:cover;
-  background-position:center;
+  background:
+    radial-gradient(circle at top right, rgba(77, 124, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,248,255,0.92));
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  box-shadow:var(--shadow-soft);
 }
 
-.disease-acne{
-  background:
-    radial-gradient(circle at 52% 60%, rgba(203, 77, 92, 0.7) 0 8%, transparent 8.5%),
-    radial-gradient(circle at 43% 42%, rgba(226, 102, 104, 0.65) 0 6%, transparent 6.5%),
-    radial-gradient(circle at 64% 38%, rgba(214, 85, 100, 0.6) 0 5%, transparent 5.5%),
-    linear-gradient(180deg, #f7dacd, #f0cab8);
+.disease-label{
+  display:inline-flex;
+  align-self:flex-start;
+  padding:7px 11px;
+  border-radius:999px;
+  background:linear-gradient(135deg, var(--soft-blue), var(--soft-teal));
+  color:var(--primary);
+  font-size:0.74rem;
+  font-weight:700;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
 }
 
-.disease-eczema{
-  background:
-    radial-gradient(circle at 50% 52%, rgba(184, 100, 92, 0.5) 0 19%, transparent 19.5%),
-    linear-gradient(180deg, #f7dacd, #edc4b0);
+.disease-points{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.disease-psoriasis{
-  background:
-    repeating-linear-gradient(0deg, rgba(246,246,246,0.88) 0 4px, rgba(192,114,124,0.28) 4px 10px),
-    linear-gradient(180deg, #f4d5c7, #ecbca8);
-}
-
-.disease-ringworm{
-  background:
-    radial-gradient(circle at 50% 50%, transparent 0 15%, rgba(185, 95, 103, 0.62) 15% 22%, rgba(245,208,204,0.84) 22% 30%, transparent 30.5%),
-    linear-gradient(180deg, #f6d9cc, #edc5b1);
+.disease-points span{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#ffffff;
+  border:1px solid var(--border);
+  color:var(--muted);
+  font-size:0.82rem;
+  font-weight:600;
 }
 
 .report-section,

@@ -282,27 +282,210 @@ function downloadReport() {
     return;
   }
 
-  const reportText = [
-    "DermaSphere AI Skin Screening Report",
-    "-----------------------------------",
-    `Disease prediction: ${latestReport.disease}`,
-    `Confidence score: ${latestReport.confidence}`,
-    `Severity: ${latestReport.severity} (${latestReport.severityPercent}%)`,
-    `Symptoms: ${latestReport.symptoms}`,
-    `Precautions: ${latestReport.precautions}`,
-    `Treatment suggestions: ${latestReport.treatment}`,
-    `Doctor consultation warning: ${latestReport.notice}`,
-    "",
-    `Medical disclaimer: ${latestReport.disclaimer}`
-  ].join("\n");
+  const reportWindow = window.open("", "_blank", "width=960,height=900");
+  if (!reportWindow) {
+    renderError("Popup blocked. Please allow popups to download the structured medical report.");
+    return;
+  }
 
-  const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "dermasphere-ai-report.txt";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
+  const reportHtml = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>DermaSphere AI Report</title>
+      <style>
+        body {
+          margin: 0;
+          font-family: Arial, sans-serif;
+          background: #f4f8fc;
+          color: #17324a;
+        }
+        .page {
+          max-width: 900px;
+          margin: 32px auto;
+          background: #ffffff;
+          border: 1px solid #d9e5ef;
+          border-radius: 24px;
+          box-shadow: 0 18px 40px rgba(35, 74, 117, 0.08);
+          overflow: hidden;
+        }
+        .header {
+          padding: 28px 32px;
+          background: linear-gradient(135deg, #edf7ff, #eefaf7);
+          border-bottom: 1px solid #d9e5ef;
+        }
+        .header h1 {
+          margin: 0 0 8px;
+          font-size: 28px;
+        }
+        .header p {
+          margin: 0;
+          color: #607f95;
+          line-height: 1.6;
+        }
+        .section {
+          padding: 28px 32px;
+          border-bottom: 1px solid #edf2f7;
+        }
+        .section:last-child {
+          border-bottom: none;
+        }
+        .section h2 {
+          margin: 0 0 16px;
+          font-size: 18px;
+        }
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 16px;
+        }
+        .card {
+          padding: 18px;
+          border: 1px solid #d9e5ef;
+          border-radius: 18px;
+          background: #f9fcff;
+        }
+        .card span {
+          display: block;
+          font-size: 12px;
+          color: #6b8498;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .card strong {
+          display: block;
+          font-size: 18px;
+          margin-bottom: 6px;
+        }
+        .full {
+          grid-column: 1 / -1;
+        }
+        .meter {
+          height: 10px;
+          background: #e8eef6;
+          border-radius: 999px;
+          overflow: hidden;
+          margin-top: 10px;
+        }
+        .meter-fill {
+          height: 100%;
+          width: ${latestReport.severityPercent}%;
+          background: linear-gradient(90deg, #37b7aa, #4d7cff);
+          border-radius: 999px;
+        }
+        .note {
+          color: #607f95;
+          line-height: 1.7;
+          margin: 0;
+        }
+        .disclaimer {
+          background: #f7fbff;
+        }
+        .footer {
+          padding: 18px 32px 28px;
+          color: #7b92a4;
+          font-size: 13px;
+        }
+        .actions {
+          padding: 0 32px 28px;
+        }
+        .print-btn {
+          border: none;
+          border-radius: 999px;
+          padding: 12px 18px;
+          background: linear-gradient(135deg, #3e7bd6, #2fb7aa);
+          color: white;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        @media print {
+          body {
+            background: white;
+          }
+          .page {
+            margin: 0;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+          }
+          .actions {
+            display: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="page">
+        <div class="header">
+          <h1>DermaSphere AI Skin Screening Report</h1>
+          <p>Structured preliminary AI-generated skin condition report for review and presentation.</p>
+        </div>
+
+        <div class="section">
+          <h2>Prediction Summary</h2>
+          <div class="grid">
+            <div class="card">
+              <span>Disease Prediction</span>
+              <strong>${latestReport.disease}</strong>
+              <p class="note">Primary disease class selected by the AI model.</p>
+            </div>
+            <div class="card">
+              <span>Confidence Score</span>
+              <strong>${latestReport.confidence}</strong>
+              <p class="note">Model confidence based on uploaded image analysis.</p>
+            </div>
+            <div class="card full">
+              <span>Severity Level</span>
+              <strong>${latestReport.severity}</strong>
+              <div class="meter"><div class="meter-fill"></div></div>
+              <p class="note">Visual severity meter shown as a screening support indicator only.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Clinical Guidance</h2>
+          <div class="grid">
+            <div class="card full">
+              <span>Symptoms</span>
+              <p class="note">${latestReport.symptoms}</p>
+            </div>
+            <div class="card full">
+              <span>Precautions</span>
+              <p class="note">${latestReport.precautions}</p>
+            </div>
+            <div class="card full">
+              <span>Treatment Suggestions</span>
+              <p class="note">${latestReport.treatment}</p>
+            </div>
+            <div class="card full">
+              <span>Dermatologist Consultation Recommendation</span>
+              <p class="note">${latestReport.notice}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section disclaimer">
+          <h2>Medical Disclaimer</h2>
+          <p class="note">${latestReport.disclaimer}</p>
+        </div>
+
+        <div class="actions">
+          <button class="print-btn" onclick="window.print()">Download / Print Report</button>
+        </div>
+
+        <div class="footer">
+          Generated by DermaSphere AI. This document is intended for preliminary screening support only.
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  reportWindow.document.open();
+  reportWindow.document.write(reportHtml);
+  reportWindow.document.close();
 }
